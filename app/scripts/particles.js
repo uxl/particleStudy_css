@@ -43,7 +43,7 @@ var PARTICLES = (function($) {
                 height: screen.height,
                 shape: 0,
                 rotation: 2,
-                spread: 100, 
+                spread: 100,
                 renderer: 0,
                 cameramove: false,
                 reset: reset,
@@ -59,11 +59,11 @@ var PARTICLES = (function($) {
                 camPercentY: 0,
                 camPercentX: 0,
                 regen: true,
-                color1:'#A3B4E8', 
-                color2:'#2D66C1', 
-                color3:'#C4D4EC', 
-                color4:'#82DFD6', 
-                color5:'#9FE4E6',
+                color1: '#A3B4E8',
+                color2: '#2D66C1',
+                color3: '#C4D4EC',
+                color4: '#82DFD6',
+                color5: '#9FE4E6',
                 text: false
             };
 
@@ -164,9 +164,9 @@ var PARTICLES = (function($) {
             document.body.appendChild(particles);
 
             for (var i = 0; i < settings.number; i++) {
-                if(settings.text){
+                if (settings.text) {
                     $('#particles').append('<div id="part' + i + '" class="hex1 hexagon-wrapper"><div id="partcontent' + i + '" class="particle-color hexagon"><h1>Happy Holidays</h1></div></div>');
-                }else{
+                } else {
                     $('#particles').append('<div id="part' + i + '" class="hex1 hexagon-wrapper"><div id="partcontent' + i + '" class="particle-color hexagon"></div></div>');
                 }
                 //add to objStore
@@ -210,7 +210,7 @@ var PARTICLES = (function($) {
 
             $(part > 'div').removeClass('particle-color');
 
-            TweenLite.set(part, {
+            TweenLite.to(part, 1,{
                 rotationZ: randomZrotation,
                 rotationX: randomXrotation,
                 rotationY: randomYrotation,
@@ -246,12 +246,27 @@ var PARTICLES = (function($) {
                     rotationZ: 0,
                     z: -1000,
                     delay: particleDelay,
-                    transformOrigin: 'left 50% -5'
-                    // ,
-                    // onComplete: regenerate,
-                    // onCompleteParams: {
-                    //     part
-                    // }
+                    transformOrigin: 'left 50% -5',
+                    onComplete: recycleParticle,
+                    onCompleteParams: [{
+                            self
+                        },
+                        part, num
+                    ]
+
+                });
+            }
+        },
+        recycleParticle = function(tween, part, num) {
+            if (settings.regen) {
+                TweenLite.to(part, 0.5, {
+                    ease: Back.easeIn.config(1.7),
+                    delay: 5, 
+                    opacity: 0,
+                    scaleX: 0.5,
+                    scaleY: 0.5,
+                    onComplete: initParticle,
+                    onCompleteParams: [part, num]
                 });
             }
         },

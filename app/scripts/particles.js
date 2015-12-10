@@ -109,11 +109,11 @@ var PARTICLES = (function($) {
             gui.add(settings, "height");
 
             gui.add(settings, "text").onChange(reset);
-            // gui.add(settings, "cameramove");
-            // gui.add(settings, 'camx').listen();
-            // gui.add(settings, 'camy').listen();
-            // gui.add(settings, "camPercentX").listen();
-            // gui.add(settings, "camPercentY").listen();
+            gui.add(settings, "cameramove");
+            gui.add(settings, 'camx').listen();
+            gui.add(settings, 'camy').listen();
+            gui.add(settings, "camPercentX").listen();
+            gui.add(settings, "camPercentY").listen();
             // gui.add(settings, "shape", {
             //     circle: 0,
             //     heart: 1,
@@ -228,8 +228,8 @@ var PARTICLES = (function($) {
                     rotationY: 0,
                     scaleX: randomScale,
                     scaleY: randomScale,
-                    x: settings.targetX,
-                    y: settings.targetY,
+                    x: settings.targetX + '%',
+                    y: settings.targetY + '%',
                     z: -1000,
                     opacity: 1,
                     transformOrigin: 'left 50% -5'

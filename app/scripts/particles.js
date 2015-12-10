@@ -1,4 +1,4 @@
-/* global console, PARTICLES */
+/* global console, PARTICLES, dat */
 //1359x800
 
 'use strict';
@@ -38,7 +38,7 @@ var PARTICLES = (function($) {
                 timeMin: 3.5,
                 timeMax: 7,
                 scaleMax: 2,
-                scaleMin: .5,
+                scaleMin: 0.5,
                 width: screen.width,
                 height: screen.height,
                 shape: 0,
@@ -152,7 +152,7 @@ var PARTICLES = (function($) {
             createParticles();
             //$('.particle_color').css('background-color', settings.color)
         },
-        getColor = function() {
+        getColor = function() { 
             //var colorObj = new THREE.Color( settings.color );
             var hex = colorObj.getHexString();
             var newcolor = '0x' + hex;
@@ -248,16 +248,11 @@ var PARTICLES = (function($) {
                     delay: particleDelay,
                     transformOrigin: 'left 50% -5',
                     onComplete: recycleParticle,
-                    onCompleteParams: [{
-                            self
-                        },
-                        part, num
-                    ]
-
+                    onCompleteParams: [part, num]
                 });
             }
         },
-        recycleParticle = function(tween, part, num) {
+        recycleParticle = function(part, num) {
             if (settings.regen) {
                 TweenLite.to(part, 0.5, {
                     ease: Back.easeIn.config(1.7),
@@ -315,7 +310,7 @@ var PARTICLES = (function($) {
         animate = function() {
             //console.log('PARTICLES.animate');
 
-            if (resetMe == true) {
+            if (resetMe) {
                 resetMe = false;
             } else {
                 requestAnimationFrame(animate);

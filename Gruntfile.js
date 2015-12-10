@@ -42,7 +42,7 @@ module.exports = function(grunt) {
           },
           pages: {
             options: {
-              remote: 'git@github.com:uxl/threeParticleStudy.git',
+              remote: 'git@github.com:uxl/particleStudy_css.git',
               branch: 'gh-pages'
             }
           }

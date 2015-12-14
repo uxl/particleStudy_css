@@ -1,7 +1,7 @@
-/* global console, PARTICLES, dat */
-//1359x800
-
-'use strict';
+(function () {
+   'use strict';
+   // this function is strict...
+}());
 
 var PARTICLES = (function($) {
 
@@ -17,21 +17,23 @@ var PARTICLES = (function($) {
         stats = null,
         resetMe = false,
         particle = null,
+        mapWidth = null,
+        mapHeight = null,
         particleList = [],
         places = {
             'data': [
-                ['ny', -1220, 1171],
-                ['ny', -1480, 1084],
-                ['ny', -2000, 1257],
-                ['ny', -1220, 1171],
-                ['ny', -1220, 1171],
-                ['ny', -1220, 1171],
-                ['ny', -1220, 1171]
+                ['ny', 1440, 1171],
+                ['ny', 900, 1084],
+                ['ny', 800, 1257],
+                ['ny', 700, 1171],
+                ['ny', 500, 1171],
+                ['ny', 600, 1171],
+                ['ny', 200, 1171]
             ]
         },
         init = function() {
             settings = {
-                number: 100,
+                number: 100 ,
                 perspective: 500,
                 startDepth: 20,
                 particleDelay: 5,
@@ -58,25 +60,36 @@ var PARTICLES = (function($) {
                 camy: 0,
                 camPercentY: 0,
                 camPercentX: 0,
-                regen: true,
                 color1: '#A3B4E8',
                 color2: '#2D66C1',
                 color3: '#C4D4EC',
                 color4: '#82DFD6',
                 color5: '#9FE4E6',
-                text: false
+                regen: false,
+                text: false,
+                plot: false
             };
+
+            console.log( 'init ');
 
             windowX = window.innerWidth;
             windowY = window.innerHeight;
+
+            mapWidth = $('#map').width();
+            mapHeight = $('#map').height();
 
             windowHalfX = windowX / 2;
             windowHalfY = windowY / 2;
 
             //user events
-            // $(document).click(function(e) { //Default mouse Position 
-            //     console.log(e.pageX + ' , ' + e.pageY);
-            // });
+            $(document).click(function(e) { //Default mouse Position
+                //console.log('click: ' + e.pageX + ' , ' + e.pageY);
+                // debugger;
+                settings.targetX = (e.pageX * 100 / mapWidth);
+                settings.targetY = (e.pageY * 100 / mapHeight);
+                console.log('click x: ' + settings.targetX);
+                reset();
+            });
 
             document.addEventListener('mousemove', onDocumentMouseMove, false);
             document.addEventListener('touchstart', onDocumentTouchStart, false);
@@ -108,33 +121,27 @@ var PARTICLES = (function($) {
             gui.add(settings, "width");
             gui.add(settings, "height");
 
-            gui.add(settings, "text").onChange(reset);
-            gui.add(settings, "cameramove");
-            gui.add(settings, 'camx').listen();
-            gui.add(settings, 'camy').listen();
-            gui.add(settings, "camPercentX").listen();
-            gui.add(settings, "camPercentY").listen();
+            // gui.add(settings, "cameramove");
+            // gui.add(settings, 'camx').listen();
+            // gui.add(settings, 'camy').listen();
+            // gui.add(settings, "camPercentX").listen();
+            // gui.add(settings, "camPercentY").listen();
             // gui.add(settings, "shape", {
             //     circle: 0,
             //     heart: 1,
             //     hexagon: 2
             // });
             // gui.add(settings, "rotation", 0, 10).onChange(reset);
-            gui.add(settings, "targetActive").onChange(reset);
-            gui.add(settings, "targetX").min(-2000).max(4000).step(1).onFinishChange(
-                function() {
-                    reset();
-                }
-            );
-            gui.add(settings, "targetY").min(0).max(4000).step(1).onFinishChange(
-                function() {
-                    reset();
-                }
-            );
+            // gui.add(settings, 'angle').listen();
 
-            gui.add(settings, 'angle').listen();
+            gui.add(settings, "targetX").min(0).max(100).listen();
+            gui.add(settings, "targetY").min(0).max(100).listen();
+            gui.add(settings, "targetActive").onChange(reset);
 
             gui.add(settings, "regen").onChange(reset);
+            gui.add(settings, "text").onChange(reset);
+            gui.add(settings, "plot").onChange(plotVertices);
+
             gui.add(settings, "reset");
 
             //add stats
@@ -150,13 +157,15 @@ var PARTICLES = (function($) {
         reset = function() {
             removeParticles();
             createParticles();
-            //$('.particle_color').css('background-color', settings.color)
         },
-        getColor = function() { 
-            //var colorObj = new THREE.Color( settings.color );
-            var hex = colorObj.getHexString();
-            var newcolor = '0x' + hex;
-            return eval(newcolor);
+        //percent of current map scale to pixel value
+        getX = function(myX) {
+            var pixelValue = (mapWidth * myX / 100);
+            return pixelValue;
+        },
+        getY = function(myY) {
+            var pixelValue = (mapHeight * myY / 100);
+            return pixelValue;
         },
         createParticles = function() {
             particles = document.createElement('div');
@@ -165,17 +174,27 @@ var PARTICLES = (function($) {
 
             for (var i = 0; i < settings.number; i++) {
                 if (settings.text) {
-                    $('#particles').append('<div id="part' + i + '" class="hex1 hexagon-wrapper"><div id="partcontent' + i + '" class="particle-color hexagon"><h1>Happy Holidays</h1></div></div>');
+                    $('#particles').append('<div id="part' + i + '" class="hex1 hexagon-wrapper"><div id="partcontent' + i + '" class="particle-color hexagon"><h1>Message Text</h1></div></div>');
                 } else {
                     $('#particles').append('<div id="part' + i + '" class="hex1 hexagon-wrapper"><div id="partcontent' + i + '" class="particle-color hexagon"></div></div>');
                 }
                 //add to objStore
                 particleList.push(particle);
-                //particle.orbit = Math.random*365;
                 //var $part = $('#' + particle.id);
                 var part = document.getElementById('part' + i);
                 //initParticle(i, delay);
                 initParticle(part, i);
+                if(settings.plot){
+                    plotVertices(i);
+                }
+            }
+        },
+        plotVertices = function(){
+            var len = particleList.length;
+            for (var i = 0; i < len; i++) {
+
+                console.log('partcontent' + i + ' part' + i);
+                VERTICES.init('partcontent' + i,'part' + i);
             }
         },
         initParticle = function(part, num) {
@@ -198,7 +217,6 @@ var PARTICLES = (function($) {
             var randomColor = settings['color' + (Math.floor(Math.random() * 5) + 1)];
 
             //console.log(randomColor); //+ " | " + colors.data[randomColor]);
-
             var myTargetX = places.data[randomPlace][1];
             var myTargetY = places.data[randomPlace][2];
 
@@ -210,33 +228,39 @@ var PARTICLES = (function($) {
 
             $(part > 'div').removeClass('particle-color');
 
-            TweenLite.to(part, 1,{
-                rotationZ: randomZrotation,
-                rotationX: randomXrotation,
-                rotationY: randomYrotation,
-                scaleX: randomScale,
-                scaleY: randomScale,
-                x: randomx,
-                y: randomy,
-                z: randomz,
-                opacity: randomOpacity
-            });
+
             if (settings.targetActive) {
-                TweenLite.to(part, particleSpeed, {
+                myTargetX = getX(settings.targetX);
+                myTargetY = getY(settings.targetY);
+                console.log(myTargetX + ' | ' + myTargetY);
+
+                TweenLite.to(part, 1, {
                     rotationZ: 0,
                     rotationX: 0,
                     rotationY: 0,
-                    scaleX: randomScale,
-                    scaleY: randomScale,
-                    x: settings.targetX + '%',
-                    y: settings.targetY + '%',
+                    scaleX: 1,
+                    scaleY: 1,
+                    x: myTargetX,
+                    y: myTargetY,
                     z: -1000,
                     opacity: 1,
                     transformOrigin: 'left 50% -5'
                 });
             } else {
+                TweenLite.to(part, 1, {
+                    rotationZ: randomZrotation,
+                    rotationX: randomXrotation,
+                    rotationY: randomYrotation,
+                    scaleX: randomScale,
+                    scaleY: randomScale,
+                    x: randomx,
+                    y: randomy,
+                    z: randomz,
+                    opacity: randomOpacity
+                });
+
                 TweenLite.to(part, particleSpeed, {
-                    ease: Back.easeIn.config(1.7),
+                    // ease: Back.easeIn.config(1.7),
                     x: (myTargetX - ((Math.random() * settings.spread) - settings.spread)),
                     y: (myTargetY - ((Math.random() * settings.spread) - settings.spread)),
                     scaleX: 1,
@@ -256,7 +280,7 @@ var PARTICLES = (function($) {
             if (settings.regen) {
                 TweenLite.to(part, 0.5, {
                     ease: Back.easeIn.config(1.7),
-                    delay: 5, 
+                    delay: 5,
                     opacity: 0,
                     scaleX: 0.5,
                     scaleY: 0.5,
@@ -272,6 +296,8 @@ var PARTICLES = (function($) {
                 $('#part' + i).remove();
             }
             particleList = [];
+            $('#particles').remove();
+
         },
         onDocumentMouseMove = function(event) {
             //console.log('moving');
@@ -303,6 +329,9 @@ var PARTICLES = (function($) {
         onWindowResize = function() {
             windowX = window.innerWidth;
             windowY = window.innerHeight;
+
+            mapWidth = $('#map').width();
+            mapHeight = $('#map').height();
 
             windowHalfX = window.innerWidth / 2;
             windowHalfY = window.innerHeight / 2;

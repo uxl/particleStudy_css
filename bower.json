@@ -6,7 +6,9 @@
     "modernizr": "~2.8.3",
     "dat.gui": "*",
     "stats.js": "*",
-    "gsap": "~1.18.0"
+    "gsap": "~1.18.0",
+    "three.js": "threejs#*",
+    "underscore": "~1.8.3"
   },
   "overrides": {
     "bootstrap-sass": {

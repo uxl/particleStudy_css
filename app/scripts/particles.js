@@ -34,7 +34,7 @@ var PARTICLES = (function($) {
         init = function() {
             settings = {
                 number: 100 ,
-                perspective: 500,
+                perspective: 200,
                 startDepth: 20,
                 particleDelay: 5,
                 timeMin: 3.5,
@@ -67,7 +67,7 @@ var PARTICLES = (function($) {
                 color5: '#9FE4E6',
                 regen: false,
                 text: false,
-                plot: false
+                plot: plotVertices
             };
 
             console.log( 'init ');
@@ -82,7 +82,7 @@ var PARTICLES = (function($) {
             windowHalfY = windowY / 2;
 
             //user events
-            $(document).click(function(e) { //Default mouse Position
+            $('#map').click(function(e) { //Default mouse Position
                 //console.log('click: ' + e.pageX + ' , ' + e.pageY);
                 // debugger;
                 settings.targetX = (e.pageX * 100 / mapWidth);
@@ -102,7 +102,7 @@ var PARTICLES = (function($) {
             gui.add(settings, 'particleDelay').min(0).max(30).step(0.5).onFinishChange(reset);
             gui.add(settings, 'startDepth').min(0).max(400).step(10).onFinishChange(reset);
             gui.add(settings, 'perspective').min(0).max(90000).step(500).onChange(function() {
-                $('body').css('perspective', settings.perspective + 'px');
+                $('#particles').css('perspective', settings.perspective + 'px');
                 reset();
             });
 
@@ -140,7 +140,7 @@ var PARTICLES = (function($) {
 
             gui.add(settings, "regen").onChange(reset);
             gui.add(settings, "text").onChange(reset);
-            gui.add(settings, "plot").onChange(plotVertices);
+            gui.add(settings, "plot");
 
             gui.add(settings, "reset");
 
@@ -155,6 +155,7 @@ var PARTICLES = (function($) {
 
         },
         reset = function() {
+          console.log('reset called')
             removeParticles();
             createParticles();
         },
@@ -184,9 +185,6 @@ var PARTICLES = (function($) {
                 var part = document.getElementById('part' + i);
                 //initParticle(i, delay);
                 initParticle(part, i);
-                if(settings.plot){
-                    plotVertices(i);
-                }
             }
         },
         plotVertices = function(){
@@ -232,7 +230,6 @@ var PARTICLES = (function($) {
             if (settings.targetActive) {
                 myTargetX = getX(settings.targetX);
                 myTargetY = getY(settings.targetY);
-                console.log(myTargetX + ' | ' + myTargetY);
 
                 TweenLite.to(part, 1, {
                     rotationZ: 0,
@@ -247,6 +244,7 @@ var PARTICLES = (function($) {
                     transformOrigin: 'left 50% -5'
                 });
             } else {
+                // console.log('init position');
                 TweenLite.to(part, 1, {
                     rotationZ: randomZrotation,
                     rotationX: randomXrotation,
@@ -258,11 +256,12 @@ var PARTICLES = (function($) {
                     z: randomz,
                     opacity: randomOpacity
                 });
-
+                //animate onto map
+                //console.log(myTargetX + ' | ' + myTargetY)
                 TweenLite.to(part, particleSpeed, {
                     // ease: Back.easeIn.config(1.7),
-                    x: (myTargetX - ((Math.random() * settings.spread) - settings.spread)),
-                    y: (myTargetY - ((Math.random() * settings.spread) - settings.spread)),
+                    // x: (myTargetX - ((Math.random() * settings.spread) - settings.spread)),
+                    // y: (myTargetY - ((Math.random() * settings.spread) - settings.spread)),
                     scaleX: 1,
                     scaleY: 1,
                     rotationX: 0,

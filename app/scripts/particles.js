@@ -33,7 +33,7 @@ var PARTICLES = (function($) {
         },
         init = function() {
             settings = {
-                number: 100 ,
+                number: 20 ,
                 perspective: 200,
                 startDepth: 20,
                 particleDelay: 5,
@@ -67,7 +67,7 @@ var PARTICLES = (function($) {
                 color5: '#9FE4E6',
                 regen: false,
                 text: false,
-                plot: plotVertices
+                plot: false
             };
 
             console.log( 'init ');
@@ -185,14 +185,6 @@ var PARTICLES = (function($) {
                 var part = document.getElementById('part' + i);
                 //initParticle(i, delay);
                 initParticle(part, i);
-            }
-        },
-        plotVertices = function(){
-            var len = particleList.length;
-            for (var i = 0; i < len; i++) {
-
-                console.log('partcontent' + i + ' part' + i);
-                VERTICES.init('partcontent' + i,'part' + i);
             }
         },
         initParticle = function(part, num) {
@@ -346,10 +338,12 @@ var PARTICLES = (function($) {
                 render();
                 stats.update();
             }
+            if (settings.plot){
+              VERTICES.render('.hex1');
+            }
         },
         render = function() {
             settings.angle = (settings.angle + 1) % 360;
-
             if (settings.cameramove) {
 
                 settings.camx += (mouseX - settings.camx) * 0.05;

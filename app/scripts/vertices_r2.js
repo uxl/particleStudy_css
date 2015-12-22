@@ -18,7 +18,6 @@ var VERTICES = (function() {
   /* Loop
   ---------------------------------------------------------------- */
   render = function(content, ctx) { //expects class as string
-
     //console.log('ctx:' + ctx)
     context = document.querySelector(ctx);
 
@@ -220,6 +219,7 @@ var VERTICES = (function() {
       };
   };
   return {
-      render: render
+      render: render,
+      computeVertexData, computeVertexData
   };
 }());

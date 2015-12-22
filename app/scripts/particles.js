@@ -199,7 +199,7 @@ var PARTICLES = (function($) {
           $('#particles').append('<div id="part' + i + '" class="particle hex-wrapper hex"><div id="partcontent' + i + '" class="particle-color hexagon"></div></div>');
         }
         //add to objStore
-        particleList.push(particle);
+        particleList.push($("#part" + i));
         //var $part = $('#' + particle.id);
         var part = document.getElementById('part' + i);
         //initParticle(i, delay);
@@ -207,7 +207,6 @@ var PARTICLES = (function($) {
       }
     },
     initParticle = function(part, num) {
-
       var randomx = Math.round(settings.screenWidth - Math.random() * settings.screenWidth);
       var randomy = Math.round(settings.screenHeight - Math.random() * settings.screenHeight / 4);
       var randomz = Math.round(Math.random() * settings.particleDepth + 100);
@@ -243,6 +242,8 @@ var PARTICLES = (function($) {
       // var ygrid = 100;
       //console.log(xgrid);
       //var ygrid = Math.round(hexsize+spacer/screenWidth)/
+      var vertexData = VERTICES.computeVertexData(part);
+      debugger;
 
       $(part).velocity({
         translateX: [
@@ -262,10 +263,11 @@ var PARTICLES = (function($) {
           }
         ],
         translateZ: [
+          settings.particleDepthMax,
+
           function() {
             return random(settings.particleDepthMax, settings.particleDepthMin)
-          },
-          settings.particleDepthMin
+          }
         ],
         opacity: [
           function() {
@@ -275,15 +277,15 @@ var PARTICLES = (function($) {
             return Math.random() + 0.1
           }
         ],
-        rotateY: random(0, 360),
-        rotateX: random(0, 360),
-        rotateZ: random(0, 360)
+        rotateY: [0, random(-360, 360)],
+        rotateX: [0, random(-360, 360)],
+        rotateZ: [0, random(-360, 360)]
       }, {
-        duration: random(200, 4000)
+        duration: random(1000, 31000)
       })
-      .velocity("reverse", {
-        easing: "easeOutQuad"
-      });
+      // .velocity("reverse", {
+      //   easing: "easeOutQuad"
+      // });
 
 
       //$(part).css({
@@ -371,7 +373,7 @@ var PARTICLES = (function($) {
       // console.log('PARTICLES.removeParticles called');
       var len = particleList.length;
       for (var i = 0; i < len; i++) {
-        $('#part' + i).remove();
+        particleList[i].remove();
       }
       particleList = [];
       $('#particles').remove();

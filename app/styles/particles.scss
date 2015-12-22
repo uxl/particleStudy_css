@@ -1,5 +1,11 @@
 @import 'partials/hex_shape';
 @import 'partials/_vendor-prefixes';
+
+@mixin preserve3d{
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
 body {
   background-color: #000000;
 }
@@ -9,14 +15,25 @@ body {
 #particles{
   z-index: -1;
   position: absolute;
-  @include perspective(200)
+  @include perspective(200px)
   @include perspective-origin(50% 50%);
+  @include preserve3d;
+  // animation: move-origin infinite 8s;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .particle{
-	position:absolute;
-  left:0px;
-  top:0px;
+  //animation: spin 2s linear infinite;
+  // transform: rotateX(200deg);
+  @include preserve3d;
+
+  position: absolute;
+  -webkit-transform: rotateY(130deg); /* Safari */
+  transform: rotateY(130deg);
+
 }
 
 .circle {
@@ -35,11 +52,7 @@ margin-right: 20px;
 //   background-blend-mode: screen;
 // }
 
-.vertex{
-  border: 1px solid #fff;
-  border-radius: 1px;
-  background-color: #fff;
-}
+
 #map{
   position:absolute;
   z-index: -2;
@@ -51,4 +64,38 @@ margin-right: 20px;
   background-size: 100% auto;
   background-repeat: no-repeat;
   background-image: url("../images/Holiday_Card_MAP_Test.png")
+}
+
+// new ex
+.vertex {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  @include preserve3d;
+
+  width: 4px;
+  height: 4px;
+  margin: -2px;
+  border-radius: 4px;
+  color: #fff;
+  font: 6px "Arial";
+  text-indent: 6px;
+  background-color: #ff0000;
+  // white-space: nowrap;
+}
+@-webkit-keyframes spin {
+    from {
+        transform: rotateX(135deg) rotateY(135deg);
+    }
+    to   {
+        transform: rotateX(855deg) rotateY(855deg);
+    }
+}
+@keyframes move-origin {
+  0%    { perspective-origin: 0%     0%; }
+  20%   { perspective-origin: 100%   0%; }
+  40%   { perspective-origin: 100% 100%; }
+  60%   { perspective-origin: 0%   100%; }
+  80%  { perspective-origin: 50%    50%; }
+  100%  { perspective-origin: 0%     0%; }
 }

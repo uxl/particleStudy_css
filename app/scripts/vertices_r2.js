@@ -7,16 +7,22 @@
 
 var VERTICES = (function() {
   var faces = null,
+      context = null,
 
-  getFaces = function(el_class){
+  getFaces = function(content){
     // Select the faces
-    faces = [].slice.call(document.querySelectorAll(el_class));
+
+    faces = [].slice.call(document.querySelectorAll(content));
     return faces;
   },
   /* Loop
   ---------------------------------------------------------------- */
-  render = function(el_class) { //expects class as string
-    getFaces(el_class);
+  render = function(content, ctx) { //expects class as string
+
+    //console.log('ctx:' + ctx)
+    context = document.querySelector(ctx);
+
+    getFaces(content);
 
     faces.forEach(function(face, i) {
       // Extract the elements transform
@@ -39,15 +45,14 @@ var VERTICES = (function() {
       y = vertex.y.toFixed(2),
       z = vertex.z.toFixed(2),
       s = 1 - vertex.z / 400; // scale to keep the text readable
-
     if (!vertexElem) {
       vertexElem = face[id] = document.createElement("div");
       vertexElem.className = "vertex";
-      document.getElementById("scene").appendChild(vertexElem);
+      context.appendChild(vertexElem);
     }
 
     // show the vertex coordinates
-    vertexElem.textContent = "x:" + x + " y:" + y + " z:" + z;
+    //vertexElem.textContent = "x:" + x + " y:" + y + " z:" + z;
 
     // apply the tralsation to the vertex
     vertexElem.style.cssText =

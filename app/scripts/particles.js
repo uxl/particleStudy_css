@@ -33,7 +33,7 @@ var PARTICLES = (function($) {
         },
         init = function() {
             settings = {
-                number: 20 ,
+                number: 10,
                 perspective: 200,
                 startDepth: 20,
                 particleDelay: 5,
@@ -175,9 +175,9 @@ var PARTICLES = (function($) {
 
             for (var i = 0; i < settings.number; i++) {
                 if (settings.text) {
-                    $('#particles').append('<div id="part' + i + '" class="hex1 hexagon-wrapper"><div id="partcontent' + i + '" class="particle-color hexagon"><h1>Message Text</h1></div></div>');
+                    $('#particles').append('<div id="part' + i + '" class="particle hex-wrapper hex"><div id="partcontent' + i + '" class="particle-color hexagon"><h1>Message Text</h1></div></div>');
                 } else {
-                    $('#particles').append('<div id="part' + i + '" class="hex1 hexagon-wrapper"><div id="partcontent' + i + '" class="particle-color hexagon"></div></div>');
+                    $('#particles').append('><div id="part' + i + '" class="particle hex-wrapper hex"><div id="partcontent' + i + '" class="particle-color hexagon"></div></div>');
                 }
                 //add to objStore
                 particleList.push(particle);
@@ -190,7 +190,7 @@ var PARTICLES = (function($) {
         initParticle = function(part, num) {
 
             var randomx = Math.round(settings.width - Math.random() * settings.width);
-            var randomy = Math.round(settings.height / 4 - Math.random() * settings.height / 4);
+            var randomy = Math.round(settings.height - Math.random() * settings.height / 4);
             var randomz = Math.round(Math.random() * settings.startDepth + 100);
 
             var randomZrotation = Math.round(Math.random() * 1) * 360;
@@ -216,9 +216,45 @@ var PARTICLES = (function($) {
 
             $('#partcontent' + num).css('background-color', randomColor);
 
-            $(part > 'div').removeClass('particle-color');
+            //$(part).css('transform', 'translate3d('+ randomx +', '+ randomy +', '+ randomz +')')
+            // console.log(num);
+
+            //experiments
+            var spacer = 20;
+            var distance = 500;
+            var fov = 200;
+            var aspect = settings.width / settings.height;
+            //when spacer * width is over screenwidth row
+            var frustumHeight = 2.0 * distance * Math.tan(fov * 0.5 * (Math.PI/180));
+            var frustumWidth = frustumHeight * aspect;
+            //console.log('height: ' + frustumHeight + ' width: ' + frustumWidth);
+
+            var ygrid = 0;
+            var hexsize = 100;
+            var xgrid = num*(hexsize+spacer)%settings.width;
+            var ygrid = 100;
+            //console.log(xgrid);
+            //var ygrid = Math.round(hexsize+spacer/settings.width)/
+
+            $(part).css({
+                //transform: translate3d(48px, 176px, 0px) rotateY(30deg) rotateX(10deg);
+                //'transform': 'translate3d(0px,-50px,0px) rotateY(45deg)'
+                'transform': "translate3d(" + xgrid + "px, " + ygrid + "px , " + -distance + "px)",
+                'animation': 'spin infinite 8s'
+              });
+            //$(part).css('animation', 'spin infinite 8s');
+
+            if(num == 0){
+
+            }
+            //////////////////
 
 
+            // debugger;
+            //$(part > 'div').removeClass('particle-color');
+
+
+            /*
             if (settings.targetActive) {
                 myTargetX = getX(settings.targetX);
                 myTargetY = getY(settings.targetY);
@@ -265,7 +301,8 @@ var PARTICLES = (function($) {
                     onComplete: recycleParticle,
                     onCompleteParams: [part, num]
                 });
-            }
+
+            }  */
         },
         recycleParticle = function(part, num) {
             if (settings.regen) {
@@ -339,7 +376,7 @@ var PARTICLES = (function($) {
                 stats.update();
             }
             if (settings.plot){
-              VERTICES.render('.hex1');
+              VERTICES.render('.hex', '#particles');
             }
         },
         render = function() {

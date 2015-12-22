@@ -32,6 +32,7 @@ var VERTICES = (function() {
       renderVertex("b", face, vertexData.b);
       renderVertex("c", face, vertexData.c);
       renderVertex("d", face, vertexData.d);
+
     });
 
   /* Renders a vertex to the DOM
@@ -51,7 +52,7 @@ var VERTICES = (function() {
     }
 
     // show the vertex coordinates
-    //vertexElem.textContent = "x:" + x + " y:" + y + " z:" + z;
+    vertexElem.textContent = "x:" + x + " y:" + y + " z:" + z;
 
     // apply the tralsation to the vertex
     vertexElem.style.cssText =
@@ -220,6 +221,7 @@ var VERTICES = (function() {
   };
   return {
       render: render,
-      computeVertexData, computeVertexData
+      computeVertexData: computeVertexData,
+      getTransform: getTransform
   };
 }());

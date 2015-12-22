@@ -31,7 +31,7 @@ var PARTICLES = (function($) {
     },
     init = function() {
       settings = {
-        number: 100,
+        number: 1,
         perspective: 200,
         particleDepthMax: -1000,
         particleDepthMin: 200,
@@ -230,7 +230,17 @@ var PARTICLES = (function($) {
 
       var randomOpacity = (Math.round(Math.random() * 100) * 0.01);
 
-      $('#partcontent' + num).css('background-color', randomColor);
+    //  $('#partcontent' + num).css('background-color', randomColor);
+
+      $('#partcontent' + num).hover(
+        function() {
+                //mouse over
+                $(this).css('background-color', 'red')
+            }, function() {
+                //mouse out
+                $(this).css('background', randomColor)
+            }
+        );
 
       //$(part).css('transform', 'translate3d('+ randomx +', '+ randomy +', '+ randomz +')')
       // console.log(num);
@@ -242,9 +252,10 @@ var PARTICLES = (function($) {
       // var ygrid = 100;
       //console.log(xgrid);
       //var ygrid = Math.round(hexsize+spacer/screenWidth)/
-      var vertexData = VERTICES.computeVertexData(part);
-      debugger;
-
+      //var vertexData = VERTICES.computeVertexData(part);
+      var vertexMatrix = VERTICES.getTransform(part);
+      // console.log('vertexData: ' + vertexData);
+      //debugger;
       $(part).velocity({
         translateX: [
           function() {
@@ -263,7 +274,8 @@ var PARTICLES = (function($) {
           }
         ],
         translateZ: [
-          settings.particleDepthMax,
+          //settings.particleDepthMax,
+          10,
 
           function() {
             return random(settings.particleDepthMax, settings.particleDepthMin)

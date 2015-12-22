@@ -154,6 +154,9 @@ var PARTICLES = (function($) {
             animate();
 
         },
+         random = function(min, max) {
+	return Math.floor(Math.random() * (1 + max - min) + min);
+},
         reset = function() {
           console.log('reset called')
             removeParticles();
@@ -239,7 +242,7 @@ var PARTICLES = (function($) {
             $(part).css({
                 //transform: translate3d(48px, 176px, 0px) rotateY(30deg) rotateX(10deg);
                 //'transform': 'translate3d(0px,-50px,0px) rotateY(45deg)'
-                'transform': "translate3d(" + xgrid + "px, " + ygrid + "px , " + -distance + "px)",
+                // 'transform': "translate3d(" + xgrid + "px, " + ygrid + "px , " + -distance + "px)",
                 'animation': 'spin infinite 8s'
               });
             //$(part).css('animation', 'spin infinite 8s');
